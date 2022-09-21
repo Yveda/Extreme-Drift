@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum VehicleMode { Player = 0, AICar = 1 }
-public enum ControlMode { Simple = 1, Mobile = 2 }
+public enum VehicleMode { Player = 0, AICar = 1 }//车辆模式：玩家，AI
+public enum ControlMode { Simple = 1, Mobile = 2 }//控制模式：正常（pc端），手机端
 
 public class AIControl : MonoBehaviour
 {

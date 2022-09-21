@@ -9,7 +9,7 @@ public class VehicleControl : MonoBehaviour
 
     public VehicleMode vehicleMode = VehicleMode.Player;
 
-    // Wheels Setting /////////////////////////////////
+    // Wheels Setting: 车轮设置 /////////////////////////////////
 
     public CarWheels carWheels;
 
@@ -49,8 +49,8 @@ public class VehicleControl : MonoBehaviour
     [System.Serializable]
     public class CarLights
     {
-        public Light[] brakeLights;//刹车灯数组
-        public Light[] reverseLights;//倒车灯数组
+        public Light[] brakeLights;//刹车灯数组？
+        public Light[] reverseLights;//倒车灯数组？
     }
 
     // Car sounds /////////////////////////////////
@@ -67,39 +67,38 @@ public class VehicleControl : MonoBehaviour
         public AudioMixerGroup brakeAudioMixer;
     }
 
-    // Car Particle /////////////////////////////////
-
+    // Car Particle：汽车粒子 /////////////////////////////////
     public CarParticles carParticles;
 
     [System.Serializable]
     public class CarParticles
     {
-        public Material brakeParticleMaterial;
-        public GameObject brakeParticlePerfab;
-        public ParticleSystem shiftParticle1, shiftParticle2;
-        private GameObject[] wheelParticle = new GameObject[4];
+        public Material brakeParticleMaterial;//刹车特效粒子材质
+        public GameObject brakeParticlePerfab;//刹车特效粒子预制体
+        public ParticleSystem shiftParticle1, shiftParticle2;//换挡特效粒子1、2
+        private GameObject[] wheelParticle = new GameObject[4];//车轮特效数组
     }
 
-    // Car Engine Setting /////////////////////////////////
+    // Car Engine Setting: 汽车引擎设置 /////////////////////////////////
 
     public CarSetting carSetting;
 
     [System.Serializable]
     public class CarSetting
     {
-        public bool showNormalGizmos = false;//Gizmos是用于在场景视图可视化调试或辅助设置用的
+        public bool showNormalGizmos = false;//Gizmos是用于在场景视图可视化调试或辅助设置用的？
         public Transform carSteer;
         public HitGround[] hitGround;
-        public float springs = 25000.0f;
-        public float dampers = 1500.0f;
+        public float springs = 25000.0f;//值越大，悬架抵达目标位置就越快，就是悬架弹簧弹一个来回的时间的快慢
+        public float dampers = 1500.0f;//抑制悬架速度，这个参数和上一个是相辅相成的（应该是相爱相杀），若想要到达自己需要的悬架数据，需不断调整。
         public float carPower = 120f;//
         public float shiftPower = 150f;//加速
         public float brakePower = 8000f;//刹车
         public Vector3 shiftCentre = new Vector3(0.0f, -0.8f, 0.0f);
-        public float maxSteerAngle = 25.0f;
-        public float shiftDownRPM = 1500.0f;
-        public float shiftUpRPM = 2500.0f;
-        public float idleRPM = 500.0f;
+        public float maxSteerAngle = 25.0f;//最大转向角度：该值用以转向。以度为单位。一般来讲要模拟真实车辆，肯定不能直接设置该值多少度，这样太突兀了。比如设置当按下左方向键后2秒，角度才完全打完，这样模拟向左打方向盘。现实世界中车轮转向角度为30-40，各个车型略有不同。
+        public float shiftDownRPM = 1500.0f;//轮轴转速？
+        public float shiftUpRPM = 2500.0f;//轮轴转速？
+        public float idleRPM = 500.0f;//轮轴转速？
         public float stiffness = 2.0f;
         public bool automaticGear = true;
         public float[] gears = { -10f, 9f, 6f, 4.5f, 3f, 2.5f };
@@ -111,16 +110,15 @@ public class VehicleControl : MonoBehaviour
     [System.Serializable]
     public class HitGround
     {
-
-        public string tag = "street";
+        public string tag = "street";//街道
         public bool grounded = false;
-        public AudioClip brakeSound;
-        public AudioClip groundSound;
-        public Color brakeColor;
+        public AudioClip brakeSound;//刹车音效
+        public AudioClip groundSound;//碰到地面音效
+        public Color brakeColor;//刹车哥颜色
     }
 
 
-    // Camera Setting ///////////////////////////////////////////////////////////////
+    // Camera Setting：相机设置 ///////////////////////////////////////////////////////////////
 
     public CameraView cameraView;
 
@@ -130,38 +128,39 @@ public class VehicleControl : MonoBehaviour
     {
         public List<Transform> cameraSwitchView;
 
-        public float distance = 8.0f;
-        public float height = 2.5f;
-        public float angle = 8;
+        public float distance = 8.0f;//距离
+        public float height = 2.5f;//高度
+        public float angle = 8;//角度
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     [HideInInspector]
-    public AIVehicle AIVehicle;
+    public AIVehicle AIVehicle;//AI车辆脚本
 
-    private float accel = 0.0f;
-    private float steer = 0;
+    private float accel = 0.0f;//加速度？
+    private float steer = 0;//转向？转向角？
 
     [HideInInspector]
-    public bool brake;
-
+    public bool brake;//刹车？
 
     private bool shifmotor;
-    private float torque = 100f;
+    private float torque = 100f;//扭矩
 
     [HideInInspector]
-    public float curTorque = 100f;
+    public float curTorque = 100f;//当前扭矩
+
     [HideInInspector]
     public float powerShift = 100;
 
     [HideInInspector]
     public bool shift;
+
     [HideInInspector]
     public bool shifting = false;
 
     [HideInInspector]
-    public float speed = 0.0f;
+    public float speed = 0.0f;//速度
 
     private float lastSpeed = -10.0f;
 
@@ -250,6 +249,9 @@ public class VehicleControl : MonoBehaviour
         result.pos_y = pos_y;
         result.maxSteer = maxSteer;
         result.startPos = wheelCol.transform.localPosition;
+
+        // //测试没有车轮
+        // col.enabled = false;
 
         return result;
 
